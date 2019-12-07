@@ -35,13 +35,13 @@
   </div>
 </template>
 <script>
-import { getChargeList, getBuyUrl } from "../../api/api.js";
+import { getProductList, getBuyUrl } from "../../api/api.js";
 import qs from "qs";
 export default {
   data() {
     return {
-      merchantID: "77073240608545",
-      shopID: "77079236920110",
+      merchantID: "",
+      shopID: "",
       product_list: []
     };
   },
@@ -60,7 +60,7 @@ export default {
         merchants_id: this.merchantID,
         shop_id: this.shopID
       };
-      getChargeList(qs.stringify(params)).then(res => {
+      getProductList(qs.stringify(params)).then(res => {
         const { product_list } = res;
         this.product_list = product_list.map(item => {
           item.merchants_id = this.merchantID

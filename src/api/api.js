@@ -32,7 +32,7 @@ export const addUser = params => {
   return axios.get(`${base}/user/add`, { params: params });
 };
 
-export const getChargeList = params => {
+export const getProductList = params => {
   return axios.post(`${base}/financeAccount/edu_membership_productlist`,params).then(res=>res.data)
 };
 
@@ -46,4 +46,12 @@ export const queryOrderList = params => {
 
 export const queryOrderInfo = params => {
   return axios.post(`${base}/financeAccount/edu_queryorderinfo`, params).then(res => res.data);
+}
+
+export const getChargeList = params => {
+  return axios.post(`${base}/financeAccount/edu_queryrechargelist`, params).then(res => res.data);
+}
+
+export const recharge = params => {
+  return axios.post(`${base}/financeAccount/edu_recharge`, params).then(res => res.data);
 }

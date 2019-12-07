@@ -27,52 +27,87 @@
       </el-form>
     </el-col>
     <!-- 表格 -->
-    <el-table highlight-current-row style="width: 100%;">
-      <el-table-column v-model="tabel.orderID" label="订单ID"></el-table-column>
-      <el-table-column v-model="tabel.productID" label="产品ID"></el-table-column>
-      <el-table-column v-model="tabel.produtName" label="创建时间"></el-table-column>
-      <el-table-column v-model="tabel.orderTotal" label="订单总额"></el-table-column>
-      <el-table-column v-model="tabel.relPayed" label="实付金额"></el-table-column>
-      <el-table-column v-model="tabel.planDesc" label="订单状态"></el-table-column>
-      <el-table-column v-model="tabel.price" label="子订单ID"></el-table-column>
-      <el-table-column label="操作">
-        <template slot-scope="scope">
-          <el-button size="small" @click="handleGoShop(scope.row)">去购买</el-button>
-        </template>
-      </el-table-column>
+    <el-table :data="orderList" highlight-current-row style="width: 100%;">
+      <el-table-column prop="order_id" label="订单ID"></el-table-column>
+      <el-table-column prop="product_id" label="产品ID"></el-table-column>
+      <el-table-column prop="order_create_time" label="创建时间"></el-table-column>
+      <el-table-column prop="order_total_amount" label="订单总额"></el-table-column>
+      <el-table-column prop="real_pay_amount" label="实付金额"></el-table-column>
+      <el-table-column prop="status" label="订单状态"></el-table-column>
     </el-table>
   </div>
 </template>
 <script>
+import qs from "qs";
+import utils from "../../common/js/util.js";
+import orderStatus from "../../common/js/orderStatus.js";
+import { queryOrderList, queryOrderInfo } from "../../api/api.js";
 export default {
   data() {
     return {
       merchantID: "",
       shopID: "",
       checktime: "",
-      tabel: {
-        productID: "",
-        shopID: "",
-        produtName: "",
-        produtDesc: "",
-        planID: "",
-        planDesc: "",
-        price: ""
-      }
+      orderList: []
     };
   },
+  beforeMount() {
+    this.queryAllList();
+  },
   methods: {
-    handleGoShop() {
-      console.log("goshop");
-      if (false) {
+    handleCheckList() {
+      if (this.merchantID) {
+        this.queryOrderInfo();
       } else {
-        this.$message({
-          message: "http://www.baidu.com"
-        });
+        this.queryAllList();
       }
     },
-    handleCheckList() {
-      console.log("checklist");
+    queryOrderInfo() {
+      let params = {
+        account_id: sessionStorage.getItem("accountID"),
+        order_id: this.merchantID,
+        is_query_sub_order: 1
+      };
+      queryOrderInfo(qs.stringify(params)).then(res => {
+        res.order_create_time = utils.dateFormat(
+          res.order_create_time * 1000
+        );
+        res.order_total_amount = utils.priceFormat(res.order_total_amount);
+        res.real_pay_amount = utils.priceFormat(res.real_pay_amount);
+        res.status = orderStatus[res.status];
+        this.orderList.splice(0, this.orderList.length, res);
+      });
+    },
+    queryAllList() {
+      let startDate = new Date();
+      startDate.setMonth(startDate.getMonth() - 1);
+      let startTime = parseInt(startDate.getTime() / 1000);
+      let endTime = parseInt(Date.now() / 1000);
+      if (this.checktime) {
+        startTime = parseInt(this.checktime[0].getTime() / 1000);
+        endTime = parseInt(this.checktime[1].getTime() / 1000) + 86400;
+      }
+      let params = {
+        account_id: sessionStorage.getItem("accountID"),
+        is_query_sub_order: 1,
+        start_time: startTime,
+        end_time: endTime,
+        page: 1,
+        page_size: 100
+      };
+      queryOrderList(qs.stringify(params)).then(res => {
+        let { order_list } = res;
+        order_list = order_list.map(item => {
+          item.order_create_time = utils.dateFormat(
+            item.order_create_time * 1000
+          );
+          item.order_total_amount = utils.priceFormat(item.order_total_amount);
+          item.real_pay_amount = utils.priceFormat(item.real_pay_amount);
+          item.status = orderStatus[item.status];
+          return item;
+        });
+        this.orderList = order_list;
+      });
     }
   }
 };

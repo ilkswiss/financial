@@ -49,7 +49,6 @@
           if (valid) {
             this.logining = true;
             var loginParams = { accountName: this.ruleForm2.account, accountPwd: this.ruleForm2.checkPass };
-            console.log(loginParams)
             requestLogin(loginParams).then(res => {
               this.logining = false;
               let { status, message, data } = res;

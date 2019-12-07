@@ -110,7 +110,6 @@ export default {
       return aRoutes;
     },
     onSubmit() {
-      console.log("submit!");
     },
     handleopen() {
       //console.log('handleopen');
@@ -146,7 +145,7 @@ export default {
     if (user) {
       user = JSON.parse(user);
       this.sysUserName = user || "";
-      this.sysUserAvatar = user.avatar || "";
+      this.sysUserAvatar = user.avatar || logo_img;
     }
   }
 };
