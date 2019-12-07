@@ -1,13 +1,5 @@
 <template>
   <div>
-    <el-form :inline="true">
-      <el-form-item label="余额">
-        <el-input type="text" v-model.number="balance" disabled></el-input>
-      </el-form-item>
-      <el-form-item label="保证金">
-        <el-input type="text" v-model.number="guaranty" disabled></el-input>
-      </el-form-item>
-    </el-form>
     <!--搜索-->
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <h4 style="margin: 0 0 8px;padding:0">筛选查询</h4>
@@ -16,11 +8,10 @@
           <el-input type="text" v-model="merchantID" placeholder="订单号"></el-input>
         </el-form-item>
 
-		  	
         <el-form-item label="日期">
           <el-date-picker
-		  	style="width:320px"
-		  	value-format="yyyy-MM-dd"
+            style="width:320px"
+            value-format="yyyy-MM-dd"
             format="yyyy 年 MM 月 dd 日"
             v-model="checktime"
             type="daterange"
@@ -45,8 +36,8 @@
       <el-table-column v-model="tabel.planDesc" label="订单状态"></el-table-column>
       <el-table-column v-model="tabel.price" label="子订单ID"></el-table-column>
       <el-table-column label="操作">
-        <template solt-scope="scope">
-          <el-button size="small" @click="handleGoShop">去购买</el-button>
+        <template slot-scope="scope">
+          <el-button size="small" @click="handleGoShop(scope.row)">去购买</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -56,11 +47,9 @@
 export default {
   data() {
     return {
-      balance: "10000",
-      guaranty: "100000",
       merchantID: "",
-	  shopID: "",
-	  checktime:"",
+      shopID: "",
+      checktime: "",
       tabel: {
         productID: "",
         shopID: "",

@@ -56,6 +56,20 @@ export default {
             return null;
         }
 
+    },
+    filterRoutes: (data) => {
+        let fn = (data) => {
+            let arr = data.filter(item => {
+                if (!item.hidden) {
+                    if (item.children && item.children.length) {
+                        item = fn(item.children);
+                    }
+                    return true;
+                }
+            });
+            return arr;
+        };
+        return fn(data);
     }
 
 };

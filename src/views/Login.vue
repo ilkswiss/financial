@@ -50,9 +50,9 @@
             this.logining = true;
             var loginParams = { accountName: this.ruleForm2.account, accountPwd: this.ruleForm2.checkPass };
             console.log(loginParams)
-            requestLogin(loginParams).then(data => {
+            requestLogin(loginParams).then(res => {
               this.logining = false;
-              let { status, message, acID } = data;
+              let { status, message, data } = res;
               if (status !== "success") {
                 this.$message({
                   message: message,
@@ -60,7 +60,7 @@
                 });
               } else if(status==="success") {
                 sessionStorage.setItem('accountName', JSON.stringify(loginParams.accountName));
-                sessionStorage.setItem('accountID', JSON.stringify(acID));
+                sessionStorage.setItem('accountID', data);
                 this.$router.push({ path: '/productlist' });
               }
             });
